@@ -4,7 +4,7 @@ import "./globals.css";
 import { ClerkProvider } from '@clerk/nextjs';
 import Navbar from "./component/Navbar";
 import Footer from "./component/Footer";
-import { Toaster } from "react-hot-toast"; // ✅ Import Toaster
+import { Toaster } from "react-hot-toast"; // ✅ Import Toaster for notifications
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,9 +29,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        {/* Wrap the entire application in ClerkProvider */}
         <ClerkProvider>
-          {/* ✅ Global Toaster for notifications */}
+          {/* ✅ Global Toaster for Notifications */}
           <Toaster position="top-right" reverseOrder={false} />
 
           {/* Navbar */}

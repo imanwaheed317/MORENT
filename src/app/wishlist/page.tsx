@@ -1,18 +1,31 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { GoHeart } from "react-icons/go";
 import Link from "next/link";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
-import { toast } from "react-hot-toast"; // Import toast notifications
+
+interface Car {
+  _id: string;
+  name: string;
+  brand: string;
+  fuelCapacity: string;
+  transmission: string;
+  seatingCapacity: string;
+  pricePerDay: string;
+  slug?: { current: string };
+  image?: string;
+}
 
 const Wishlist = () => {
-  const [wishlist, setWishlist] = useState<any[]>([]);
+  const [wishlist, setWishlist] = useState<Car[]>([]);
 
   useEffect(() => {
-    const savedWishlist = JSON.parse(localStorage.getItem("wishlistCars") || "[]");
-    setWishlist(savedWishlist);
+    const savedWishlist: Car[] = JSON.parse(localStorage.getItem("wishlistCars") || "[]");
+
+    // Remove duplicates using Map()
+    const uniqueWishlist = Array.from(new Map(savedWishlist.map(car => [car._id, car])).values());
+    setWishlist(uniqueWishlist);
   }, []);
 
   const removeFromWishlist = (id: string) => {
@@ -20,81 +33,79 @@ const Wishlist = () => {
     setWishlist(updatedWishlist);
     localStorage.setItem("wishlistCars", JSON.stringify(updatedWishlist));
 
-    // Update likedCars
+    // Also update likedCars
     const likedCars = JSON.parse(localStorage.getItem("likedCars") || "{}");
     delete likedCars[id];
     localStorage.setItem("likedCars", JSON.stringify(likedCars));
-
-    // ✅ Show toast notification
-    toast.error("Removed from Wishlist");
   };
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10">
-      <h2 className="text-2xl font-bold mb-6 text-gray-900">My Wishlist</h2>
+      <h2 className="text-3xl font-bold text-gray-900 mb-6">My Wishlist</h2>
+
       {wishlist.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {wishlist.map((car) => (
             <div
               key={car._id}
-              className="relative bg-white shadow-md rounded-xl overflow-hidden transform transition duration-300 hover:shadow-lg"
+              className="relative bg-white shadow-lg rounded-xl overflow-hidden transition-transform transform hover:scale-105"
             >
-              {/* Heart Icon (Remove from Wishlist) */}
-              <div
-                className="absolute top-3 right-3 cursor-pointer"
-                onClick={() => removeFromWishlist(car._id)}
-              >
-                <GoHeart className="text-2xl text-gray-400 hover:text-red-500 transition" />
-              </div>
-
               {/* Car Image */}
               {car.image && (
-                <Image
-                  src={urlFor(car.image).url()}
-                  alt={car.name}
-                  width={1700}
-                  height={500}
-                  className="w-full h-40 object-cover"
-                />
+                <div className="w-full h-48">
+                  <Image
+                    src={urlFor(car.image).url()}
+                    alt={car.name}
+                    width={250}
+                    height={100}
+                    className="object-cover rounded-t-lg"
+                  />
+                </div>
               )}
 
-              {/* Car Info */}
-              <div className="p-4">
-                <h2 className="text-lg font-semibold text-gray-900">{car.name}</h2>
+              {/* Car Details */}
+              <div className="p-4 text-gray-800">
+                <h3 className="text-xl font-semibold">{car.name}</h3>
                 <p className="text-gray-500 text-sm">{car.brand}</p>
 
-                {/* Features */}
                 <div className="flex items-center space-x-3 text-gray-600 mt-2 text-sm">
                   <span>{car.fuelCapacity}</span>
                   <span>{car.transmission}</span>
                   <span>{car.seatingCapacity}</span>
                 </div>
 
-                {/* Price */}
-                <p className="text-base font-bold text-gray-900 mt-2">
+                <p className="text-lg font-bold text-blue-600 mt-3">
                   {car.pricePerDay} /day
                 </p>
 
-                {/* Rent Button */}
-                {car.slug ? (
-                  <Link href={`/product/${car.slug.current}`}>
-                    <button className="w-full mt-3 bg-blue-500 text-white py-2 rounded-lg font-medium hover:bg-blue-600 transition">
-                      Rent Now
-                    </button>
-                  </Link>
-                ) : (
-                  <p className="text-red-500 mt-2">Slug not available</p>
-                )}
+                {/* Rent & Remove Buttons */}
+                <div className="flex gap-2 mt-4">
+                  {car.slug ? (
+                    <Link href={`/product/${car.slug.current}`} className="w-1/2">
+                      <button className="w-full bg-blue-500 text-white py-2 rounded-lg font-medium hover:bg-blue-600 transition">
+                        Rent Now
+                      </button>
+                    </Link>
+                  ) : (
+                    <p className="text-red-500 mt-2">Slug not available</p>
+                  )}
+
+                  <button
+                    className="w-1/2 bg-red-500 text-white py-2 rounded-lg font-medium hover:bg-red-600 transition"
+                    onClick={() => removeFromWishlist(car._id)}
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-gray-500 text-lg">Your wishlist is empty.</p>
+        <p className="text-gray-500 text-lg text-center">Your wishlist is empty.</p>
       )}
     </div>
   );
 };
 
-// ✅ Assigning component to a variable before exporting
 export default Wishlist;

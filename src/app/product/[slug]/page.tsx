@@ -6,7 +6,6 @@ import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
 import { GoHeart } from "react-icons/go";
 
-
 interface CarsPageProps {
   params: { slug: string };
 }
@@ -37,117 +36,85 @@ export default async function CarsPage({ params }: CarsPageProps) {
 
   if (!car) {
     return (
-      <div className="max-w-7xl mx-auto px-4">
-        <h1 className="text-2xl font-bold">Car not found</h1>
-        <p>We couldn't find.</p>
+      <div className="max-w-7xl mx-auto px-4 text-center py-20">
+        <h1 className="text-3xl font-bold text-gray-800">Car Not Found</h1>
+        <p className="text-gray-600">Sorry, we couldn't find the car you're looking for.</p>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col md:flex-row max-w-7xl pl-12 py-8 gap-6">
-      {/* Left Sidebar */}
-      <aside className=" md:w-1/4 bg-white shadow-md p-4 rounded-lg overflow-y-auto ">
-        <div className="mb-8">
-          <h3 className="font-semibold text-gray-900 mb-4 text-sm">BRAND</h3>
-          <div className="space-y-3 text-gray-50">
-            {["Sport", "SUV", "MPV", "Sedan", "Coupe", "Hatchback"].map((type, index) => (
-              <div key={index} className="flex items-center space-x-2">
-                <input type="checkbox" className="w-4 h-4 text-blue-500 focus:ring-blue-500" />
-                <label className="text-gray-800">
-                  {type} <span className="text-gray-400">(10)</span>
-                </label>
-              </div>
+    <div className="max-w-7xl mx-auto px-6 py-10 md:py-16">
+      {/* Car Details Container */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 bg-white shadow-2xl rounded-xl p-6 md:p-12 relative overflow-hidden">
+        {/* Floating Heart Icon */}
+        <div className="absolute top-4 right-4">
+          <GoHeart className="text-gray-300 text-4xl cursor-pointer hover:text-red-500 transition duration-300 ease-in-out transform hover:scale-110" />
+        </div>
+
+        {/* Car Image Section */}
+        <div className="relative flex flex-col items-center">
+          <div className="relative group">
+            {car.image && (
+              <Image
+                src={urlFor(car.image).url()}
+                alt={car.name}
+                width={700}
+                height={450}
+                className="rounded-xl shadow-lg transition-transform duration-300 ease-in-out group-hover:scale-105"
+              />
+            )}
+          </div>
+
+          {/* Small Thumbnail Images */}
+          <div className="flex justify-center gap-4 mt-4">
+            {["/car1.png", "/car2.png", "/car3.png"].map((src, index) => (
+              <Image
+                key={index}
+                src={src}
+                alt={`pic-${index}`}
+                width={180}
+                height={100}
+                className="rounded-lg shadow-md cursor-pointer transition-all transform hover:scale-110 hover:shadow-xl"
+              />
             ))}
           </div>
         </div>
-  
-        <div className="mb-4">
-          <h3 className="font-semibold text-gray-900 mb-4 text-sm">CAPACITY</h3>
-          <div className="space-y-3 text-gray-50">
-            {["2 Person", "4 Person", "6 Person", "8 or More"].map((capacity, index) => (
-              <div key={index} className="flex items-center space-x-2">
-                <input type="checkbox" className="w-4 h-4 text-blue-500 focus:ring-blue-500" />
-                <label className="text-gray-800">
-                  {capacity} <span className="text-gray-400">(10)</span>
-                </label>
-              </div>
-            ))}
+
+        {/* Car Details Section */}
+        <div className="flex flex-col justify-between">
+          <div>
+            <h1 className="text-5xl font-extrabold text-gray-700 mb-4">{car.name}</h1>
+            <p className="text-lg text-gray-600">
+              <span className="font-semibold">Brand:</span> {car.brand}
+            </p>
+            <p className="text-lg text-gray-600">
+              <span className="font-serif">Fuel Capacity:</span> {car.fuelCapacity}
+            </p>
+            <p className="text-lg text-gray-600">
+              <span className="font-serif">Transmission:</span> {car.transmission}
+            </p>
+            <p className="text-lg text-gray-600">
+              <span className="font-serif">Seating Capacity:</span> {car.seatingCapacity}
+            </p>
+            <p className="text-lg text-gray-600">
+              <span className="font-serif">Price Per Day:</span> 
+              <span className="text-[#3563e9] font-bold text-xl">{car.pricePerDay}</span>
+            </p>
+            <p className="text-lg text-gray-600">
+              <span className="font-serif">Original Price:</span> 
+              <span className="line-through text-gray-500"> {car.originalPrice}</span>
+            </p>
           </div>
+
+          {/* Rent Now Button */}
+          <Link href="/payment">
+            <button className="w-full bg-gradient-to-r from-blue-800 via-blue-500 to-blue-300 text-white px-8 py-3 mb-14 rounded-lg shadow-lg hover:scale-105 transition-transform duration-300 ease-in-out">
+              Rent Now
+            </button>
+          </Link>
         </div>
-  
-        <div>
-        </div>
-      </aside>
-  
-      {/* Right Section */}
-<div className="flex flex-col md:flex-row gap-12 mt-8 pt-20 bg-gray-50 p-8 rounded-xl shadow-lg relative">
-  {/* Car Image Section */}
-  <div className="md:w-1/2 mx-auto px-4 py-8">
-    {/* Heart Icon */}
-    <div className="absolute top-4 right-4">
-      <GoHeart className="text-gray-400 text-3xl cursor-pointer hover:text-red-500 transition duration-300 ease-in-out" />
+      </div>
     </div>
-
-    {/* Large Image */}
-    <div className="mb-6">
-      {car.image && (
-        <Image
-          src={urlFor(car.image).url()}
-          alt={car.name}
-          width={1700}
-          height={500}
-        />
-      )}
-    </div>
-
-    {/* Small Images */}
-    <div className="flex justify-center gap-4">
-      {["/car1.png", "/car2.png", "/car3.png"].map((src, index) => (
-        <Image
-          key={index}
-          src={src}
-          alt={`pic-${index}`}
-          width={150}
-          height={150}
-          className="object-cover rounded-lg cursor-pointer shadow-md hover:scale-105 transform transition duration-300 ease-in-out"
-        />
-      ))}
-    </div>
-  </div>
-
-  {/* Car Details Section */}
-  <div className="w-full md:w-1/2 flex flex-col gap-6">
-    <h1 className="text-4xl font-bold text-gray-800 mb-4 border-b-2 pb-2">
-      {car.name}
-    </h1>
-
-    <p className="text-lg text-gray-600">
-      <span className="font-semibold">Brand:</span> {car.brand}
-    </p>
-    <p className="text-lg text-gray-600">
-      <span className="font-semibold">Fuel Capacity:</span> {car.fuelCapacity}
-    </p>
-    <p className="text-lg text-gray-600">
-      <span className="font-semibold">Transmission:</span> {car.transmission}
-    </p>
-    <p className="text-lg text-gray-600">
-      <span className="font-semibold">Seating Capacity:</span> {car.seatingCapacity}
-    </p>
-    <p className="text-lg text-gray-600">
-      <span className="font-semibold">Price Per Day:</span> ${car.pricePerDay}
-    </p>
-    <p className="text-lg text-gray-600">
-      <span className="font-semibold">Original Price:</span> ${car.originalPrice}
-    </p>
-
-    <Link href="/payment">
-      <button className="bg-[#3563e9] text-white px-6 py-3 mt-4 rounded-lg shadow-md hover:bg-blue-600 transform transition duration-300 ease-in-out">
-        Rent Now
-      </button>
-    </Link>
-  </div>
-</div>
-</div>
   );
-}  
+}
