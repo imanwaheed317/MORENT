@@ -38,7 +38,7 @@ export default async function CarsPage({ params }: CarsPageProps) {
     return (
       <div className="max-w-7xl mx-auto px-4 text-center py-20">
         <h1 className="text-3xl font-bold text-gray-800">Car Not Found</h1>
-        <p className="text-gray-600">Sorry, we couldn't find the car you're looking for.</p>
+        <p className="text-gray-600">Sorry we could not found.</p>
       </div>
     );
   }

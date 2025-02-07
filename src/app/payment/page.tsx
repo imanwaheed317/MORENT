@@ -29,6 +29,7 @@ export default function Page() {
   const router = useRouter();
   const handleSubmit = (e: React.MouseEvent, car: cars) => {
     e.preventDefault();
+    console.log("Car selected:", car.name);
     Swal.fire({
       title: "Booking Success",
       text: "Your booking has been successfully completed!",

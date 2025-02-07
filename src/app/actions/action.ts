@@ -18,7 +18,7 @@ export const removeFromCart = (productId: string) => {
     localStorage.setItem("cart", JSON.stringify(cart));
 };
 
-export const updateCartQuantity = (productId: string, quantity: number) => {
+export const updateCartQuantity = (productId: string) => {
     const cart: cars[] = JSON.parse(localStorage.getItem("cart") || "[]");
     const productIndex = cart.findIndex((item) => item._id === productId);
 
