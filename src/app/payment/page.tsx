@@ -1,29 +1,9 @@
 "use client";
-import { client } from "@/sanity/lib/client";
-import { groq } from "next-sanity";
 import { useState } from "react";
 import Image from "next/image";
 import Swal from "sweetalert2";
-import { urlFor } from "@/sanity/lib/image";
 import { cars } from "@/app/types/CarsType";
 import { useRouter } from "next/navigation";
-
-
-interface CarsPageProps {
-  params: { slug: string };
-}
-
-async function getCars(slug: string): Promise<cars> {
-  return client.fetch(
-    groq`*[_type == "car" && slug.current == $slug][0]{
-      _id,
-      name,
-      _type,
-     image,
-    }`,
-    { slug }
-  );
-}
 
 export default function Page() {
   const [formData, setFormData] = useState({
@@ -50,30 +30,30 @@ export default function Page() {
     e.preventDefault();
     Swal.fire({
       title: "Booking Success",
-      text: "Your booking has been successfully ",
+      text: "Your booking has been successfully completed!",
       icon: "success",
     });
     router.push("/#");
   };
 
-  const car : cars = {
+  // Sample car data
+  const car: cars = {
     _id: "123",
     name: "Toyota Corolla",
     _type: "cars",
-    "image": {
-      "asset": {
-        "_ref": "image-Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000-jpg",
-        "_type": "image"
-      }
+    image: {
+      asset: {
+        _ref: "image-Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000-jpg",
+        _type: "image",
+      },
     },
     seatingCapacity: "",
     originalPrice: "",
     slug: {
       _type: "slug",
-      current: ""
-    }
+      current: "",
+    },
   };
-
   return (
     <>
       <div className="w-[220px] sm:p-6 flex flex-wrap gap-6 justify-center]">

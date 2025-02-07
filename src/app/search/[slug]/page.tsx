@@ -37,8 +37,8 @@ export default async function CarsPage({ params }: CarsPageProps) {
     return (
       <div className="max-w-7xl mx-auto px-4">
         <h1 className="text-2xl font-bold">Car not found</h1>
-        <p>We couldn't find the car you're looking for. Please check the URL or try again later.</p>
-      </div>
+        <p>We couldn&apos;t find the car you&apos;re looking for. Please check the URL or try again later.</p>
+        </div>
     );
   }
 

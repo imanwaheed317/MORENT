@@ -4,6 +4,7 @@ import { client } from "@/sanity/lib/client";
 import { allcars } from "@/sanity/lib/queries";
 import { cars } from "@/app/types/CarsType";
 import { urlFor } from "@/sanity/lib/image";
+import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { GoHeart } from "react-icons/go";
@@ -78,7 +79,7 @@ const Cars = () => {
 
             {/* Car Image */}
             {car.image && (
-              <img
+              <Image
                 src={urlFor(car.image).width(250).height(100).url()}
                 alt={car.name}
                 className="object-cover"

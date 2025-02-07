@@ -1,4 +1,5 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { GoHeart } from "react-icons/go";
 import Link from "next/link";
@@ -95,4 +96,5 @@ const Wishlist = () => {
   );
 };
 
+// ✅ Assigning component to a variable before exporting
 export default Wishlist;
