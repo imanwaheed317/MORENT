@@ -7,9 +7,6 @@ const nextConfig = {
   images: {
     domains: ['cdn.sanity.io'], // Allow Sanity's image domain
   },
-  experimental: {
-    turbopack: true, // Enable Turbopack (if necessary for your project)
-  },
 };
 
 module.exports = nextConfig;
