@@ -5,6 +5,7 @@ const nextConfig = {
     domains: ['cdn.sanity.io'], // Allow Sanity's image domain
   },
   experimental: {
+    turbopack: true, // Disable Turbopack to avoid module resolution issues
   },
 };
 
