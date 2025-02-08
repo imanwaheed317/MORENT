@@ -24,7 +24,7 @@ interface Car {
   pricePerDay: number;
   originalPrice: number;
   slug: string;
-  image: any; // Replace `any` with a stricter type if needed
+  image: any[]; // Replace `any` with a stricter type if needed
 }
 
 // Fetch car data based on the slug
