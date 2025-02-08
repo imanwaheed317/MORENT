@@ -5,14 +5,15 @@ import Image from "next/image";
 import Link from "next/link";
 import { GoHeart } from "react-icons/go";
 
-// Define the Props for the CarsPage
+// Define Props
 interface CarsPageProps {
   params: {
     slug: string;
+    searchParams?: Record<string, string | string[] | undefined>;
   };
 }
 
-// Define the type for the Car's image
+// Define Car Image Type
 interface CarImage {
   _type: string;
   asset: {
@@ -21,7 +22,7 @@ interface CarImage {
   };
 }
 
-// Define the type for the Car object
+// Define Car Object Type
 interface Car {
   _id: string;
   name: string;
@@ -33,7 +34,7 @@ interface Car {
   pricePerDay: number;
   originalPrice: number;
   slug: string;
-  image: CarImage[]; // Use the specific CarImage type
+  image: CarImage[];
 }
 
 // Fetch car data based on the slug
@@ -50,18 +51,17 @@ async function getCars(slug: string): Promise<Car | null> {
       pricePerDay,
       originalPrice,
       slug,
-      image
+      "image": image[].asset->_ref // Fetch full image reference
     }`,
     { slug }
   );
 }
 
-// The dynamic page component
+// Dynamic page component
 export default async function CarsPage({ params }: CarsPageProps) {
-  const { slug } = params; // Destructure slug from params
+  const { slug } = params;
   const car = await getCars(slug);
 
-  // Handle case where no car is found
   if (!car) {
     return (
       <div className="max-w-7xl mx-auto px-4 text-center py-20">
@@ -71,7 +71,6 @@ export default async function CarsPage({ params }: CarsPageProps) {
     );
   }
 
-  // Render the car details page
   return (
     <div className="max-w-7xl mx-auto px-6 py-10 md:py-16">
       {/* Car Details Container */}
@@ -83,27 +82,17 @@ export default async function CarsPage({ params }: CarsPageProps) {
 
         {/* Car Image Section */}
         <div className="relative flex flex-col items-center">
-          {car.image && car.image.length > 0 && (
+          {car.image && car.image.length > 0 && urlFor(car.image[0]) ? (
             <Image
-              src={urlFor(car.image[0]).url()} // Use the first image in the array
+              src={urlFor(car.image[0]).url()} 
               alt={car.name}
               width={700}
               height={450}
               className="rounded-xl shadow-lg transition-transform duration-300 ease-in-out group-hover:scale-105"
             />
+          ) : (
+            <p className="text-gray-500">Image not available</p>
           )}
-          <div className="flex justify-center gap-4 mt-4">
-            {["/car1.png", "/car2.png", "/car3.png"].map((src, index) => (
-              <Image
-                key={index}
-                src={src}
-                alt={`pic-${index}`}
-                width={180}
-                height={100}
-                className="rounded-lg shadow-md cursor-pointer transition-all transform hover:scale-110 hover:shadow-xl"
-              />
-            ))}
-          </div>
         </div>
 
         {/* Car Details Section */}
