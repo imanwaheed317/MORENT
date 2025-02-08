@@ -5,6 +5,8 @@ import { groq } from "next-sanity";
 import { urlFor } from "@/sanity/lib/image";
 import Link from "next/link";
 
+
+
 interface CarsPageProps {
   params: { slug: string };
 }
