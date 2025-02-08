@@ -12,6 +12,15 @@ interface CarsPageProps {
   };
 }
 
+// Define the type for the Car's image
+interface CarImage {
+  _type: string;
+  asset: {
+    _ref: string;
+    _type: string;
+  };
+}
+
 // Define the type for the Car object
 interface Car {
   _id: string;
@@ -24,7 +33,7 @@ interface Car {
   pricePerDay: number;
   originalPrice: number;
   slug: string;
-  image: any[]; // Replace `any` with a stricter type if needed
+  image: CarImage[]; // Use the specific CarImage type
 }
 
 // Fetch car data based on the slug
@@ -74,16 +83,16 @@ export default async function CarsPage({ params }: CarsPageProps) {
 
         {/* Car Image Section */}
         <div className="relative flex flex-col items-center">
-          {car.image && (
+          {car.image && car.image.length > 0 && (
             <Image
-              src={urlFor(car.image).url()}
+              src={urlFor(car.image[0]).url()} // Use the first image in the array
               alt={car.name}
               width={700}
               height={450}
               className="rounded-xl shadow-lg transition-transform duration-300 ease-in-out group-hover:scale-105"
             />
           )}
-            <div className="flex justify-center gap-4 mt-4">
+          <div className="flex justify-center gap-4 mt-4">
             {["/car1.png", "/car2.png", "/car3.png"].map((src, index) => (
               <Image
                 key={index}
@@ -96,7 +105,6 @@ export default async function CarsPage({ params }: CarsPageProps) {
             ))}
           </div>
         </div>
-        
 
         {/* Car Details Section */}
         <div className="flex flex-col justify-between">
