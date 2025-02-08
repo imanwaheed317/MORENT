@@ -1,22 +1,38 @@
 import { client } from "@/sanity/lib/client";
-import { cars } from "@/app/types/CarsType";
-import Image from "next/image";
 import { groq } from "next-sanity";
 import { urlFor } from "@/sanity/lib/image";
+import Image from "next/image";
 import Link from "next/link";
 import { GoHeart } from "react-icons/go";
 
+// Define the Props for the CarsPage
 interface CarsPageProps {
-  params: { slug: string };
+  params: {
+    slug: string;
+  };
 }
 
-async function getCars(slug: string): Promise<cars> {
+// Define the type for the Car object
+interface Car {
+  _id: string;
+  name: string;
+  brand: string;
+  type: string;
+  fuelCapacity: string;
+  transmission: string;
+  seatingCapacity: string;
+  pricePerDay: number;
+  originalPrice: number;
+  slug: string;
+  image: any; // Replace `any` with a stricter type if needed
+}
+
+// Fetch car data based on the slug
+async function getCars(slug: string): Promise<Car | null> {
   return client.fetch(
     groq`*[_type == "car" && slug.current == $slug][0]{
       _id,
       name,
-      _type,
-      image,
       brand,
       type,
       fuelCapacity,
@@ -24,25 +40,29 @@ async function getCars(slug: string): Promise<cars> {
       seatingCapacity,
       pricePerDay,
       originalPrice,
-      slug
+      slug,
+      image
     }`,
     { slug }
   );
 }
 
+// The dynamic page component
 export default async function CarsPage({ params }: CarsPageProps) {
-  const { slug } = params;
+  const { slug } = params; // Destructure slug from params
   const car = await getCars(slug);
 
+  // Handle case where no car is found
   if (!car) {
     return (
       <div className="max-w-7xl mx-auto px-4 text-center py-20">
         <h1 className="text-3xl font-bold text-gray-800">Car Not Found</h1>
-        <p className="text-gray-600">Sorry we could not found.</p>
+        <p className="text-gray-600">Sorry, we could not find the car you are looking for.</p>
       </div>
     );
   }
 
+  // Render the car details page
   return (
     <div className="max-w-7xl mx-auto px-6 py-10 md:py-16">
       {/* Car Details Container */}
@@ -54,20 +74,16 @@ export default async function CarsPage({ params }: CarsPageProps) {
 
         {/* Car Image Section */}
         <div className="relative flex flex-col items-center">
-          <div className="relative group">
-            {car.image && (
-              <Image
-                src={urlFor(car.image).url()}
-                alt={car.name}
-                width={700}
-                height={450}
-                className="rounded-xl shadow-lg transition-transform duration-300 ease-in-out group-hover:scale-105"
-              />
-            )}
-          </div>
-
-          {/* Small Thumbnail Images */}
-          <div className="flex justify-center gap-4 mt-4">
+          {car.image && (
+            <Image
+              src={urlFor(car.image).url()}
+              alt={car.name}
+              width={700}
+              height={450}
+              className="rounded-xl shadow-lg transition-transform duration-300 ease-in-out group-hover:scale-105"
+            />
+          )}
+            <div className="flex justify-center gap-4 mt-4">
             {["/car1.png", "/car2.png", "/car3.png"].map((src, index) => (
               <Image
                 key={index}
@@ -80,6 +96,7 @@ export default async function CarsPage({ params }: CarsPageProps) {
             ))}
           </div>
         </div>
+        
 
         {/* Car Details Section */}
         <div className="flex flex-col justify-between">
@@ -98,12 +115,12 @@ export default async function CarsPage({ params }: CarsPageProps) {
               <span className="font-serif">Seating Capacity:</span> {car.seatingCapacity}
             </p>
             <p className="text-lg text-gray-600">
-              <span className="font-serif">Price Per Day:</span> 
-              <span className="text-[#3563e9] font-bold text-xl">{car.pricePerDay}</span>
+              <span className="font-serif">Price Per Day:</span>{" "}
+              <span className="text-[#3563e9] font-bold text-xl">${car.pricePerDay}</span>
             </p>
             <p className="text-lg text-gray-600">
-              <span className="font-serif">Original Price:</span> 
-              <span className="line-through text-gray-500"> {car.originalPrice}</span>
+              <span className="font-serif">Original Price:</span>{" "}
+              <span className="line-through text-gray-500">${car.originalPrice}</span>
             </p>
           </div>
 
